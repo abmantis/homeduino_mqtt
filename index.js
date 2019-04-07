@@ -24,24 +24,26 @@ var defaultRepeats = nconf.get('rf:repeats')
 
 // input/switch15/124333/0
 function topicToProtocol (topic) {
-  var topicIdx = 1
-  var protocol = topic.split("/")[0]
+  var topicIdx = 0
+  var protocol = topic.split("/")[topicIdx++]
 
   var options = {}
 
-  if (topic.split("/")[2] === "channel") {
-    options.channel = topic.split("/")[3]
+  if (topic.split("/")[topicIdx] === "channel") {
+    ++topicIdx
+    options.channel = topic.split("/")[topicIdx++]
   }
-  else if (topic.split("/")[1] === "id") {
-    options.id = topic.split("/")[2]
-  } else {
-    options.id = topic.split("/")[1]
+
+  if (topic.split("/")[topicIdx] === "id") {
+    ++topicIdx
+    options.id = topic.split("/")[topicIdx++]
   }
 
   if (topic.split("/")[topicIdx] === "unit") {
     ++topicIdx
     options.unit = topic.split("/")[topicIdx++]
   }
+
   return {protocol: protocol, options: options}
 }
 
@@ -126,7 +128,7 @@ client.on('message', function (topic, message) {
     payloadJson = JSON.parse(message)
     rfRepeats = defaultRepeats
 
-    var r = new RegExp("^" + baseTopic +"/");
+    var r = new RegExp("^" + baseTopic + nconf.get('rf:statesuffix') +"/");
     var protocolOptions = topicToProtocol(topic.replace(r,""))
 
     if (payloadJson["state"] != undefined) {
