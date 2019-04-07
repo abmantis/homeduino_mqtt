@@ -2,8 +2,11 @@
   "port" : "/dev/ttyAMA0",
   "baud": 115200,
   "mqtt": {
-    "username": "hass",
-    "password": "hass"
+    "broker": "mqtt://core-mosquitto:1883",
+    "options": {
+      "username": "hass",
+      "password": "hass"
+    }
   },
   "basetopic": "input",
   "rf": {
